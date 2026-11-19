@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POS Slush del Barrio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <header class="top-bar">
+        <h1 class="logo-titulo">Slush POS</h1>
+        <div class="cart-icon-container" onclick="cambiarVista('vista-carrito')">
+            🛒 <span id="cart-badge" class="badge">0</span>
+        </div>
+    </header>
+
+    <!-- VISTA 1: CATÁLOGO -->
+    <div id="vista-catalogo" class="vista activa">
+        <div id="grid-productos" class="grid-2-cols"></div>
+    </div>
+
+    <!-- VISTA 2: CONSTRUCTOR -->
+    <div id="vista-constructor" class="vista">
+        <button class="btn-volver" onclick="volverCatalogo()">← Volver</button>
+        
+        <div class="constructor-header">
+            <h2 id="titulo-producto">Producto</h2>
+            <h3 id="precio-base-display" class="precio-destacado">$0</h3>
+        </div>
+        
+        <div class="seccion-opciones">
+            <h3>Sabor en Máquina</h3>
+            <div id="grid-sabores" class="grid-3-cols">
+                <!-- Se inyecta con JS -->
+            </div>
+        </div>
+
+        <div class="seccion-opciones">
+            <h3>Adicionales</h3>
+            <div id="lista-adicionales" class="lista-check">
+                <!-- Se inyecta con JS -->
+            </div>
+        </div>
+
+        <div class="seccion-opciones">
+            <h3>Notas / Modificaciones</h3>
+            <textarea id="notas-input" placeholder="Escribe observaciones aquí..."></textarea>
+            <div class="presets-container">
+                <button class="btn-preset" onclick="agregarNota('Sin escarchar')">Sin escarchar</button>
+                <button class="btn-preset" onclick="agregarNota('Sin chamoy')">Sin chamoy</button>
+                <button class="btn-preset" onclick="agregarNota('Sin dulces')">Sin dulces</button>
+                <button class="btn-preset" onclick="agregarNota('Solo chicles')">Solo chicles</button>
+            </div>
+        </div>
+
+        <button class="btn-accion sticky-btn" onclick="guardarEnCarrito()">
+            <span id="btn-agregar-text">Agregar a la orden</span> - <span id="subtotal-constructor">$0</span>
+        </button>
+    </div>
+
+    <!-- VISTA 3: RESUMEN / CARRITO -->
+    <div id="vista-carrito" class="vista">
+        <button class="btn-volver" onclick="volverCatalogo()">← Seguir comprando</button>
+        
+        <div class="carrito-header">
+            <h2>Resumen de Comanda</h2>
+        </div>
+        
+        <div id="lista-carrito" class="contenedor-tickets">
+            <!-- Se inyecta con JS -->
+        </div>
+
+        <div class="seccion-domicilio">
+            <label class="check-container font-bold">
+                <input type="checkbox" id="chk-domicilio" onchange="toggleDomicilio()"> 
+                🏍️ Aplicar Domicilio
+            </label>
+            <div id="input-domicilio-container" style="display: none; margin-top: 15px;">
+                <label>Valor ($0 - $10.000):</label>
+                <div class="input-group" id="grupo-domicilio">
+                    <span class="currency-symbol">$</span>
+                    <input type="text" id="valor-domicilio" inputmode="numeric" placeholder="0" onkeyup="formatearMiles(this)">
+                    <button class="btn-aplicar" id="btn-fijar-dom" onclick="fijarDomicilio()">Aplicar</button>
+                    <button class="btn-editar-dom" id="btn-editar-dom" onclick="desbloquearDomicilio()" style="display:none;">✏️</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-texto-sutil">
+            <span>TOTAL FACTURA:</span>
+            <span id="total-comanda" class="font-bold">$0</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

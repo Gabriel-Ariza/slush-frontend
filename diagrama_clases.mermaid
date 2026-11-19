@@ -1,0 +1,61 @@
+classDiagram
+    direction TB
+
+    %% Modelos Base (Datos del Catálogo)
+    class Producto {
+        +String id
+        +String nombre
+        +Number precio
+    }
+
+    class Sabor {
+        +String id
+        +String nombre
+        +String tipo
+        +String grad
+        +String bgClass
+    }
+
+    class Adicional {
+        +String id
+        +String nombre
+        +Number precio
+    }
+
+    %% Modelo Dinámico (Lo que el mesero construye)
+    class ItemCarrito {
+        +Producto producto
+        +Sabor sabor
+        +List~Adicional~ adicionales
+        +String notas
+        +Number subtotal
+    }
+
+    %% Estructura JSON para la API (Telegram -> Backend)
+    class PayloadComanda {
+        +List~ItemCarrito~ carrito
+        +Number domicilio
+        +Number total
+    }
+
+    %% Controladores (Lógica de app.js)
+    class PosController {
+        +List~ItemCarrito~ carrito
+        +Producto prodActual
+        +Sabor saborActual
+        +Number indexEdicion
+        +inicializarConstructor(producto)
+        +seleccionarSabor(sabor)
+        +recalcularConstructor() Number
+        +guardarEnCarrito()
+        +editarItem(index)
+        +actualizarTotal()
+        +enviarComanda()
+    }
+
+    %% Relaciones
+    ItemCarrito "1" *-- "1" Producto : contiene
+    ItemCarrito "1" *-- "1" Sabor : tiene
+    ItemCarrito "1" *-- "*" Adicional : incluye
+    PayloadComanda "1" *-- "*" ItemCarrito : transporta
+    PosController --> PayloadComanda : genera y envía

@@ -1,0 +1,40 @@
+stateDiagram-v2
+    direction TB
+    [*] --> VistaCatalogo : Inicia Mini App (Telegram)
+    
+    state VistaCatalogo {
+        [*] --> MostrarProductos
+        MostrarProductos --> ProductoSeleccionado : Clic en tarjeta
+    }
+    
+    ProductoSeleccionado --> VistaConstructor : Pasa datos base
+    
+    state VistaConstructor {
+        [*] --> SeleccionarSabor : Requerido (Botones)
+        SeleccionarSabor --> MarcarAdicionales : Opcional (Checkboxes)
+        MarcarAdicionales --> EscribirNotas : Opcional (Texto/Presets)
+        EscribirNotas --> CalcularSubtotal
+    }
+    
+    CalcularSubtotal --> VistaCarrito : Botón "Agregar a la orden" (o Guardar Cambios)
+    VistaConstructor --> VistaCatalogo : Botón "← Volver"
+    
+    state VistaCarrito {
+        [*] --> MostrarTickets
+        MostrarTickets --> EditarProducto
+        MostrarTickets --> EliminarProducto
+        MostrarTickets --> IngresarDomicilio
+    }
+    
+    EditarProducto --> VistaConstructor : Carga datos previos
+    EliminarProducto --> MostrarTickets : Actualiza lista
+    EliminarProducto --> VistaCatalogo : Si el carrito queda vacío
+    
+    IngresarDomicilio --> CalcularGranTotal
+    MostrarTickets --> CalcularGranTotal
+    
+    CalcularGranTotal --> TelegramButton : Muestra botón nativo si total > 0
+    VistaCarrito --> VistaCatalogo : Botón "← Seguir comprando"
+    
+    TelegramButton --> PayloadJSON : Clic en "ENVIAR COMANDA"
+    PayloadJSON --> [*] : Cierra App y envía a Backend AWS
